@@ -78,7 +78,7 @@ int window_step_scan(FILE *sonarDepths) {
     while (fgets(line, IN_LEN, sonarDepths)) {
         current = atoi(line);
         enqueue(queue, current);
-        if (current > initialSum && initialDepth != 0){
+        if (current > initialSum && initialSum != 0){
             numberLarger++;
         }
         initialSum = current;
