@@ -6,9 +6,37 @@
 struct SubmarinePosition {
     int horizontalPosition;
     int depthPosition;
+    int aim;
 };
 
-int determine_final_position(FILE *submarineCourse) {
+int determine_final_position_advanced(FILE *submarineCourse) {
+
+    char *changeAmount;
+    char line[IN_LEN] = {0};
+    int finalPosition = 0;
+    struct SubmarinePosition submarinePosition = {0};
+
+    while (fgets(line, IN_LEN, submarineCourse)) {
+        strtok_r(line, " ", &changeAmount);
+        if (strcmp(line, "forward") == 0) {
+            submarinePosition.horizontalPosition += atoi(changeAmount);
+            submarinePosition.depthPosition += atoi(changeAmount) * submarinePosition.aim;
+        }
+        if (strcmp(line, "up") == 0) {
+            submarinePosition.aim -= atoi(changeAmount);
+        }
+        if (strcmp(line, "down") == 0) {
+            submarinePosition.aim += atoi(changeAmount);
+        }
+    }
+    finalPosition = submarinePosition.horizontalPosition * submarinePosition.depthPosition;
+    if (fclose(submarineCourse)) {
+        return EXIT_FAILURE;
+    }
+    return finalPosition;
+}
+
+int determine_final_position_simple(FILE *submarineCourse) {
 
     char *changeAmount;
     char line[IN_LEN] = {0};
@@ -47,5 +75,8 @@ int main (int argc, char **argv) {
 
     filePath = argv[1];
     submarineCourse = fopen(filePath, "r");
-    printf("Final submarine position product: %d\n", determine_final_position(submarineCourse));
+    printf("Final submarine position (simple) product: %d\n", determine_final_position_simple(submarineCourse));
+
+    submarineCourse = fopen(filePath, "r");
+    printf("Final submarine position (advanced) product: %d\n", determine_final_position_advanced(submarineCourse));
 }
