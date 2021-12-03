@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include "queue.c"
 
-#define IN_LEN 99
+#define IN_LEN 255
 
 // Here we do a window scan using a queue struct as our rolling window
 int window_step_scan(FILE *sonarDepths) {
@@ -16,6 +16,7 @@ int window_step_scan(FILE *sonarDepths) {
     // Loop through the depths and add to the queue, when at each depth check the sum 
     // before adding the newest depth and removing the other
     while (fgets(line, IN_LEN, sonarDepths)) {
+        
         depthValue = atoi(line);
         enqueue(queue, depthValue);
 
@@ -28,7 +29,6 @@ int window_step_scan(FILE *sonarDepths) {
         }
         initialSum = currentSum;
     }
-
     if (fclose(sonarDepths)) {
         return EXIT_FAILURE;
     }
@@ -63,7 +63,7 @@ int main(int argc, char **argv) {
 
     if (argc < 2) {
         printf("Please provide a text file with depths\n");
-        return 0;
+        return -1;
     }
 
     char *filePath = (char *) malloc(255*sizeof(char));
