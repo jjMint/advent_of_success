@@ -1,9 +1,6 @@
 ##Imports data as list of strings
 data = open('input_3.txt', mode='r').readlines()
 
-#input = []
-#for i in data:
-#    input.append(i.split(("(?!^)")))
 input = []
 for i in range(1,len(data)):
     input.append(data[i].strip())
