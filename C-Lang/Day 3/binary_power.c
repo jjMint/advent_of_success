@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <math.h>
 
 #define IN_LEN 255
 #define binarySize 12
@@ -15,14 +16,14 @@ int calculate_power(FILE *binaryInput) {
 
     char *binaryLine;
     char line[IN_LEN] = {0};
-    int gamma;
+    int gamma = 0;
+    int epsilon = 0;
     char gammaBin[binarySize];
-    int epsilon;
     struct binarySignal binarySignals[binarySize] = {0};
 
     while (fgets(line, IN_LEN, binaryInput)) {
-        for (int i = 0; i < binarySize; i++) {
-            if (atoi(line) & (1 << (i-1))) {
+        for (int i = 0; i <= binarySize-1; i++) {
+            if (strtol(line, &binaryLine, 2) & (1 << (i))) {
                 binarySignals[i].oneCount++;
             }
             else {
@@ -30,22 +31,18 @@ int calculate_power(FILE *binaryInput) {
             }
         }
     }
-    for (int i = binarySize; i > 0; i--) {
-        if (binarySignals[i].oneCount > binarySignals[i].zeroCount && i == 0) {
-            gamma = (i*2) + 1;
-            epsilon = (i*2) + 0;
+    for (int i = binarySize-1; i >= 0; i--) {
+        printf("Postion %d Values for ones: %d and zeroes: %d\n", i, binarySignals[i].oneCount, binarySignals[i].zeroCount);
+    }
+    
+    for (int i = binarySize-1; i >= 0; i--) {
+        if (binarySignals[i].oneCount > binarySignals[i].zeroCount) {
+            gamma += ((pow(2,i)) * 1);
+            epsilon += (pow(2,i)) * 0;
         }
-        if (binarySignals[i].oneCount > binarySignals[i].zeroCount && i != 0) {
-            gamma = (gamma*2) + 1;
-            epsilon = (epsilon*2) + 0;
-        }
-        if (binarySignals[i].oneCount < binarySignals[i].zeroCount && i == 0) {
-            gamma = (i*2) + 0;
-            epsilon = (i*2) + 1;
-        }
-        if (binarySignals[i].oneCount < binarySignals[i].zeroCount && i != 0) {
-            gamma = (gamma*2) + 0;
-            epsilon = (epsilon*2) + 1;
+        if (binarySignals[i].oneCount < binarySignals[i].zeroCount) {
+            gamma += (pow(2,i)) * 0;
+            epsilon += (pow(2,i)) * 1;
         }
     }
     printf("Values for gamma: %d and epsilon: %d\n", gamma, epsilon);
